@@ -43,15 +43,28 @@ export function getDeviceId(): string {
   return deviceId;
 }
 
-// Anonymous name generation
+// Anonymous name generation with Nepali influence
 const adjectives = [
   'Brave', 'Silent', 'Digital', 'Free', 'Bold', 'Swift', 'Fierce', 'Noble',
-  'Proud', 'Strong', 'Wise', 'Calm', 'Wild', 'Pure', 'Sharp', 'Quick'
+  'Proud', 'Strong', 'Wise', 'Calm', 'Wild', 'Pure', 'Sharp', 'Quick',
+  'Ancient', 'Mystic', 'Golden', 'Sacred', 'Hidden', 'Eternal', 'Radiant', 'Sovereign',
+  'Himali', 'Sagarmatha', 'Terai', 'Pahadi', 'Sherpa', 'Gurkha', 'Gorkhali', 'Newar',
+  'Tamang', 'Tharu', 'Magar', 'Rai', 'Limbu', 'Bahun', 'Chhetri', 'Janajati'
 ];
 
 const animals = [
   'Yak', 'Eagle', 'Tiger', 'Rhino', 'Leopard', 'Elephant', 'Hawk', 'Wolf',
-  'Bear', 'Falcon', 'Lion', 'Deer', 'Fox', 'Crane', 'Panda', 'Raven'
+  'Bear', 'Falcon', 'Lion', 'Deer', 'Fox', 'Crane', 'Panda', 'Raven',
+  'Serpent', 'Dragon', 'Griffin', 'Lynx', 'Jaguar', 'Panther', 'Cobra', 'Phoenix',
+  'Dhanesh', 'Chaur', 'Baagh', 'Hatti', 'Siyal', 'Bagh', 'Chituwa', 'Bhalu',
+  'Garuda', 'Hanuman', 'Makara', 'Singha', 'Hiran', 'Mayur', 'Kaag', 'Syal'
+];
+
+const suffixes = [
+  'Warrior', 'Guardian', 'Sentinel', 'Champion', 'Defender', 'Keeper', 'Hunter', 'Ranger',
+  'Scholar', 'Mystic', 'Sage', 'Oracle', 'Seeker', 'Wanderer', 'Rebel', 'Pioneer',
+  'Bir', 'Bahadur', 'Singh', 'Dai', 'Didi', 'Bhai', 'Bahini', 'Guru',
+  'Lama', 'Sherpa', 'Thapa', 'Karki', 'Shrestha', 'Maharjan', 'Tamang', 'Malla'
 ];
 
 export function getAnonymousName(deviceId: string): string {
@@ -63,7 +76,10 @@ export function getAnonymousName(deviceId: string): string {
   const hash = simpleHash(deviceId);
   const adjective = adjectives[hash % adjectives.length];
   const animal = animals[(hash >> 4) % animals.length];
-  const name = `${adjective} ${animal}`;
+  const suffix = suffixes[(hash >> 8) % suffixes.length];
+  const number = (hash % 999) + 1; // 1-999
+  
+  const name = `${adjective} ${animal} ${suffix} ${number}`;
   
   localStorage.setItem('nepowatch-user-name', name);
   return name;
