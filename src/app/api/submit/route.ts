@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
+function isValidTikTokUrl(url: string) {
+  return /^https:\/\/(www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+/.test(url);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { submitterName, tiktokUrl, title, description } = await request.json();
@@ -14,11 +18,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Basic TikTok URL validation
-    const tiktokUrlPattern = /^https?:\/\/(www\.)?(tiktok\.com|vm\.tiktok\.com)/i;
-    if (!tiktokUrlPattern.test(tiktokUrl)) {
+    if (!isValidTikTokUrl(tiktokUrl)) {
       return NextResponse.json(
-        { error: 'Please provide a valid TikTok URL' },
+        { error: 'Invalid TikTok video URL' },
         { status: 400 }
       );
     }

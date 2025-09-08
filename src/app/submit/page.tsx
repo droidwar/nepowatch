@@ -18,10 +18,20 @@ export default function SubmitPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  function isValidTikTokUrl(url: string) {
+    // Accepts URLs like: https://www.tiktok.com/@username/video/1234567890
+    return /^https:\/\/(www\.)?tiktok\.com\/@[\w.-]+\/video\/\d+/.test(url);
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.tiktokUrl || !formData.title) return;
+
+    if (!isValidTikTokUrl(formData.tiktokUrl)) {
+      setError("Please enter a valid TikTok video URL.");
+      return;
+    }
 
     setIsSubmitting(true);
     setError("");

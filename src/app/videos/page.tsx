@@ -22,6 +22,12 @@ async function getApprovedVideos(): Promise<VideoSubmission[]> {
   return videos;
 }
 
+function extractTikTokId(url: string): string {
+  // Example: https://www.tiktok.com/@user/video/1234567890123456789
+  const match = url.match(/\/video\/(\d+)/);
+  return match ? match[1] : "";
+}
+
 export default async function VideosPage() {
   const videos = await getApprovedVideos();
 
@@ -63,14 +69,18 @@ export default async function VideosPage() {
                         By {video.submitterName} • {video.createdAt.toLocaleDateString()}
                       </p>
                       <p className="text-sm mt-2">{video.description}</p>
-                      <a 
-                        href={video.tiktokUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline text-sm"
-                      >
-                        {video.tiktokUrl}
-                      </a>
+                      {/* TikTok embed */}
+                      <div className="my-4">
+                        <iframe
+                          src={`https://www.tiktok.com/embed/${extractTikTokId(video.tiktokUrl)}`}
+                          width="325"
+                          height="575"
+                          allow="encrypted-media"
+                          allowFullScreen
+                          frameBorder="0"
+                          className="rounded-lg mx-auto"
+                        />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
