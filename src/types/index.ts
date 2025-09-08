@@ -10,7 +10,7 @@ export interface VideoSubmission {
   votes: number;
 }
 
-export interface Post {
+export interface BlogPost {
   id: string;
   authorName: string;
   title: string;
@@ -48,9 +48,37 @@ export interface NepoEntry {
 
 export interface Vote {
   id: string;
+  userId: string;
   targetId: string;
   targetType: 'video' | 'post' | 'comment';
   voteType: 'up' | 'down';
-  ipHash: string;
   createdAt: Date;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  createdAt: Date;
+  upvotes: number;
+  downvotes: number;
+  commentCount: number;
+  category: 'discussion' | 'news' | 'corruption' | 'protest';
+  status: 'active' | 'hidden';
+}
+
+export interface PostComment {
+  id: string;
+  postId: string;
+  parentId?: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  createdAt: Date;
+  upvotes: number;
+  downvotes: number;
+  depth: number;
+  status: 'active' | 'hidden';
 }

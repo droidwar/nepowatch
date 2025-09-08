@@ -37,6 +37,9 @@ export default function RootLayout({
                 <Link href="/nepo-kids" className="text-foreground/70 hover:text-foreground transition-colors">
                   Nepo Kids
                 </Link>
+                <Link href="/community" className="text-foreground/70 hover:text-foreground transition-colors">
+                  Community
+                </Link>
                 <Link href="/admin" className="text-foreground/70 hover:text-foreground transition-colors">
                   Admin
                 </Link>
