@@ -1,7 +1,30 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { db } from "@/lib/firebase";
+import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
+import { VideoSubmission } from "@/types";
 
-export default function VideosPage() {
+async function getApprovedVideos(): Promise<VideoSubmission[]> {
+  const q = query(
+    collection(db, "videoSubmissions"),
+    where("status", "==", "approved"),
+    orderBy("createdAt", "desc")
+  );
+  const querySnapshot = await getDocs(q);
+  const videos: VideoSubmission[] = [];
+  querySnapshot.forEach((doc) => {
+    videos.push({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate() || new Date(),
+    } as VideoSubmission);
+  });
+  return videos;
+}
+
+export default async function VideosPage() {
+  const videos = await getApprovedVideos();
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -18,16 +41,42 @@ export default function VideosPage() {
 
       <Card>
         <CardContent className="pt-6">
-          <div className="text-center py-8">
-            <div className="text-4xl mb-4">📱</div>
-            <h3 className="text-lg font-semibold mb-2">No videos yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Be the first to submit a TikTok video for the community!
-            </p>
-            <Button asChild>
-              <a href="/submit">Submit First Video</a>
-            </Button>
-          </div>
+          {videos.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="text-4xl mb-4">📱</div>
+              <h3 className="text-lg font-semibold mb-2">No videos yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Be the first to submit a TikTok video for the community!
+              </p>
+              <Button asChild>
+                <a href="/submit">Submit First Video</a>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {videos.map((video) => (
+                <Card key={video.id} className="border-green-200">
+                  <CardContent className="pt-4">
+                    <div>
+                      <h4 className="font-semibold">{video.title}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        By {video.submitterName} • {video.createdAt.toLocaleDateString()}
+                      </p>
+                      <p className="text-sm mt-2">{video.description}</p>
+                      <a 
+                        href={video.tiktokUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        {video.tiktokUrl}
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
