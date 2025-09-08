@@ -20,10 +20,10 @@ export default function RootLayout({
         <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                 <div className="text-2xl">🏴‍☠️</div>
                 <h1 className="text-xl font-bold">NepoWatch</h1>
-              </div>
+              </Link>
               <nav className="hidden md:flex space-x-6">
                 <Link href="/" className="text-foreground/70 hover:text-foreground transition-colors">
                   Feed
