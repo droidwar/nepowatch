@@ -49,7 +49,7 @@ export async function requireAdminAuth() {
     }
     
     return { email, isAdmin: true };
-  } catch (error) {
+  } catch {
     redirect('/admin/login');
   }
 }

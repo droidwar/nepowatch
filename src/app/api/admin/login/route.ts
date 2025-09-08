@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         redirectTo: '/admin'
       });
 
-    } catch (error: any) {
+    } catch {
       return NextResponse.json(
         { error: 'Authentication failed' },
         { status: 401 }

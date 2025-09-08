@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
+import Link from "next/link";
 
 export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
@@ -46,8 +47,9 @@ export default function AdminLoginPage() {
         // Sign out from Firebase if server rejected
         await auth.signOut();
       }
-    } catch (err: any) {
-      if (err.code === 'auth/popup-closed-by-user') {
+    } catch (err: unknown) {
+      const error = err as { code?: string };
+      if (error.code === 'auth/popup-closed-by-user') {
         setError('Sign-in was cancelled');
       } else {
         setError('Sign-in failed. Please try again.');
@@ -100,7 +102,7 @@ export default function AdminLoginPage() {
 
             <div className="mt-4 text-center">
               <Button variant="ghost" size="sm" asChild>
-                <a href="/">← Back to NepoWatch</a>
+                <Link href="/">← Back to NepoWatch</Link>
               </Button>
             </div>
           </CardContent>

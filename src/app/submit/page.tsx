@@ -70,7 +70,7 @@ export default function SubmitPage() {
             📱 Submit TikTok Video
           </CardTitle>
           <p className="text-muted-foreground">
-            Share relevant TikTok content related to Nepal's social media ban and protests. 
+            Share relevant TikTok content related to Nepal&apos;s social media ban and protests. 
             All submissions are reviewed before appearing in the feed.
           </p>
         </CardHeader>
@@ -127,7 +127,7 @@ export default function SubmitPage() {
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                placeholder="Why is this video relevant to Nepal's digital resistance movement?"
+                placeholder="Why is this video relevant to Nepal&apos;s digital resistance movement?"
                 rows={3}
                 className="w-full"
               />
@@ -152,7 +152,7 @@ export default function SubmitPage() {
           <div className="flex items-start gap-2">
             <Badge variant="secondary" className="mt-0.5">✅</Badge>
             <p className="text-sm">
-              <strong>Relevant Content:</strong> Videos about Nepal's social media ban, protests, digital rights, or political corruption
+              <strong>Relevant Content:</strong> Videos about Nepal&apos;s social media ban, protests, digital rights, or political corruption
             </p>
           </div>
           <div className="flex items-start gap-2">

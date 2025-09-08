@@ -8,7 +8,7 @@ export default function VideosPage() {
         <div>
           <h1 className="text-2xl font-bold">📱 Curated TikTok Videos</h1>
           <p className="text-muted-foreground">
-            Community-approved content related to Nepal's digital resistance
+            Community-approved content related to Nepal&apos;s digital resistance
           </p>
         </div>
         <Button asChild>
@@ -39,7 +39,7 @@ export default function VideosPage() {
           <p className="text-sm text-muted-foreground">
             All videos are community-submitted and reviewed before appearing here. 
             Help us maintain quality by reporting inappropriate content and submitting 
-            relevant videos about Nepal's digital resistance movement.
+            relevant videos about Nepal&apos;s digital resistance movement.
           </p>
         </CardContent>
       </Card>

@@ -50,8 +50,9 @@ export function useAuth() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      return { success: false, error: err.message || 'Login failed' };
     }
   };
 
@@ -59,8 +60,9 @@ export function useAuth() {
     try {
       await signOut(auth);
       return { success: true };
-    } catch (error: any) {
-      return { success: false, error: error.message };
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      return { success: false, error: err.message || 'Logout failed' };
     }
   };
 

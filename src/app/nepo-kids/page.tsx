@@ -21,8 +21,8 @@ export default function NepoKidsPage() {
             <div className="text-4xl mb-4">🚧</div>
             <h3 className="text-lg font-semibold mb-2">Database Under Construction</h3>
             <p className="text-muted-foreground mb-4">
-              We're carefully documenting and verifying cases of political nepotism and corruption. 
-              This section will feature detailed profiles of politicians' children and their 
+              We&apos;re carefully documenting and verifying cases of political nepotism and corruption. 
+              This section will feature detailed profiles of politicians&apos; children and their 
               taxpayer-funded lifestyles.
             </p>
             <div className="flex flex-wrap gap-2 justify-center mb-4">
@@ -38,7 +38,7 @@ export default function NepoKidsPage() {
       <div className="grid md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">📊 What We're Documenting</CardTitle>
+            <CardTitle className="text-lg">📊 What We&apos;re Documenting</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-start gap-2">
@@ -151,8 +151,8 @@ export default function NepoKidsPage() {
           </div>
           <p className="text-sm text-muted-foreground">
             While young Nepalis struggle with unemployment and are forced to work abroad, 
-            politicians' children enjoy taxpayer-funded luxury lifestyles. This database 
-            exposes the stark inequality in Nepal's political system.
+            politicians&apos; children enjoy taxpayer-funded luxury lifestyles. This database 
+            exposes the stark inequality in Nepal&apos;s political system.
           </p>
         </CardContent>
       </Card>

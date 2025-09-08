@@ -8,12 +8,12 @@ export default function Home() {
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
-            🏴‍☠️ Nepal's Digital Resistance Hub
+            🏴‍☠️ Nepal&apos;s Digital Resistance Hub
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-lg text-muted-foreground mb-4">
-            Tracking Nepal's social media ban and Gen Z protests. 13.5 million users affected. 
+            Tracking Nepal&apos;s social media ban and Gen Z protests. 13.5 million users affected. 
             Join the movement for digital freedom.
           </p>
           <div className="flex flex-wrap gap-2">

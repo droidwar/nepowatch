@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,21 +23,21 @@ export default function RootLayout({
                 <h1 className="text-xl font-bold">NepoWatch</h1>
               </div>
               <nav className="hidden md:flex space-x-6">
-                <a href="/" className="text-foreground/70 hover:text-foreground transition-colors">
+                <Link href="/" className="text-foreground/70 hover:text-foreground transition-colors">
                   Feed
-                </a>
-                <a href="/videos" className="text-foreground/70 hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/videos" className="text-foreground/70 hover:text-foreground transition-colors">
                   Videos
-                </a>
-                <a href="/submit" className="text-foreground/70 hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/submit" className="text-foreground/70 hover:text-foreground transition-colors">
                   Submit
-                </a>
-                <a href="/nepo-kids" className="text-foreground/70 hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/nepo-kids" className="text-foreground/70 hover:text-foreground transition-colors">
                   Nepo Kids
-                </a>
-                <a href="/admin" className="text-foreground/70 hover:text-foreground transition-colors">
+                </Link>
+                <Link href="/admin" className="text-foreground/70 hover:text-foreground transition-colors">
                   Admin
-                </a>
+                </Link>
               </nav>
             </div>
           </div>
