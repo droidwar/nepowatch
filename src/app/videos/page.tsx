@@ -59,28 +59,25 @@ export default async function VideosPage() {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {videos.map((video) => (
-                <Card key={video.id} className="border-green-200">
-                  <CardContent className="pt-4">
-                    <div>
-                      <h4 className="font-semibold">{video.title}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        By {video.submitterName} • {video.createdAt.toLocaleDateString()}
-                      </p>
-                      <p className="text-sm mt-2">{video.description}</p>
-                      {/* TikTok embed */}
-                      <div className="my-4">
-                        <iframe
-                          src={`https://www.tiktok.com/embed/${extractTikTokId(video.tiktokUrl)}`}
-                          width="325"
-                          height="575"
-                          allow="encrypted-media"
-                          allowFullScreen
-                          frameBorder="0"
-                          className="rounded-lg mx-auto"
-                        />
-                      </div>
+                <Card key={video.id} className="border-green-200 h-full flex flex-col">
+                  <CardContent className="pt-4 flex-1 flex flex-col">
+                    <h4 className="font-semibold">{video.title}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      By {video.submitterName} • {video.createdAt.toLocaleDateString()}
+                    </p>
+                    <p className="text-sm mt-2">{video.description}</p>
+                    <div className="my-4 flex-1 flex items-center justify-center">
+                      <iframe
+                        src={`https://www.tiktok.com/embed/${extractTikTokId(video.tiktokUrl)}`}
+                        width="100%"
+                        height="600"
+                        allow="encrypted-media"
+                        allowFullScreen
+                        frameBorder="0"
+                        className="rounded-lg"
+                      />
                     </div>
                   </CardContent>
                 </Card>

@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  onSnapshot, 
-  doc, 
-  updateDoc 
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { VideoSubmission } from "@/types";
@@ -75,22 +75,22 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/admin/logout', {
-        method: 'POST',
+      const response = await fetch("/api/admin/logout", {
+        method: "POST",
       });
-      
+
       if (response.ok) {
-        router.push('/admin/login');
+        router.push("/admin/login");
       }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     }
   };
 
   const handleApprove = async (videoId: string) => {
     try {
       await updateDoc(doc(db, "videoSubmissions", videoId), {
-        status: "approved"
+        status: "approved",
       });
     } catch (error) {
       console.error("Error approving video:", error);
@@ -101,13 +101,19 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
   const handleReject = async (videoId: string) => {
     try {
       await updateDoc(doc(db, "videoSubmissions", videoId), {
-        status: "rejected"
+        status: "rejected",
       });
     } catch (error) {
       console.error("Error rejecting video:", error);
       alert("Error rejecting video");
     }
   };
+
+  function extractTikTokId(url: string): string {
+    // Example: https://www.tiktok.com/@user/video/1234567890123456789
+    const match = url.match(/\/video\/(\d+)/);
+    return match ? match[1] : "";
+  }
 
   if (loading) {
     return (
@@ -117,8 +123,8 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
     );
   }
 
-  const approvedCount = allVideos.filter(v => v.status === 'approved').length;
-  const rejectedCount = allVideos.filter(v => v.status === 'rejected').length;
+  const approvedCount = allVideos.filter((v) => v.status === "approved").length;
+  const rejectedCount = allVideos.filter((v) => v.status === "rejected").length;
 
   return (
     <div className="space-y-6">
@@ -138,25 +144,33 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-orange-600">{pendingVideos.length}</div>
+            <div className="text-2xl font-bold text-orange-600">
+              {pendingVideos.length}
+            </div>
             <p className="text-sm text-muted-foreground">Pending Review</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">{approvedCount}</div>
+            <div className="text-2xl font-bold text-green-600">
+              {approvedCount}
+            </div>
             <p className="text-sm text-muted-foreground">Approved</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">{rejectedCount}</div>
+            <div className="text-2xl font-bold text-red-600">
+              {rejectedCount}
+            </div>
             <p className="text-sm text-muted-foreground">Rejected</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">{allVideos.length}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              {allVideos.length}
+            </div>
             <p className="text-sm text-muted-foreground">Total Submissions</p>
           </CardContent>
         </Card>
@@ -168,8 +182,9 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
           <div className="flex items-center gap-2">
             <div className="text-green-600">🔒</div>
             <p className="text-sm text-green-800">
-              <strong>Secure Admin Access:</strong> Authenticated via Google OAuth with server-side 
-              email verification. Cannot be bypassed by client-side modifications.
+              <strong>Secure Admin Access:</strong> Authenticated via Google OAuth
+              with server-side email verification. Cannot be bypassed by
+              client-side modifications.
             </p>
           </div>
         </CardContent>
@@ -194,28 +209,35 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
                       <div className="flex-1">
                         <h4 className="font-semibold">{video.title}</h4>
                         <p className="text-sm text-muted-foreground">
-                          By {video.submitterName} • {video.createdAt.toLocaleDateString()}
+                          By {video.submitterName} •{" "}
+                          {video.createdAt.toLocaleDateString()}
                         </p>
                         <p className="text-sm mt-2">{video.description}</p>
-                        <a 
-                          href={video.tiktokUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline text-sm"
-                        >
-                          {video.tiktokUrl}
-                        </a>
+                        {/* TikTok embed */}
+                        <div className="my-4">
+                          <iframe
+                            src={`https://www.tiktok.com/embed/${extractTikTokId(
+                              video.tiktokUrl
+                            )}`}
+                            width="325"
+                            height="575"
+                            allow="encrypted-media"
+                            allowFullScreen
+                            frameBorder="0"
+                            className="rounded-lg mx-auto"
+                          />
+                        </div>
                       </div>
                       <div className="flex gap-2 ml-4">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           onClick={() => handleReject(video.id)}
                         >
                           Reject
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => handleApprove(video.id)}
                         >
                           Approve
@@ -238,17 +260,23 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
         <CardContent>
           <div className="space-y-2">
             {allVideos.slice(0, 10).map((video) => (
-              <div key={video.id} className="flex items-center justify-between py-2 border-b">
+              <div
+                key={video.id}
+                className="flex items-center justify-between py-2 border-b"
+              >
                 <div>
                   <span className="font-medium text-sm">{video.title}</span>
                   <span className="text-muted-foreground text-sm ml-2">
                     by {video.submitterName}
                   </span>
                 </div>
-                <Badge 
+                <Badge
                   variant={
-                    video.status === 'approved' ? 'default' :
-                    video.status === 'rejected' ? 'destructive' : 'secondary'
+                    video.status === "approved"
+                      ? "default"
+                      : video.status === "rejected"
+                      ? "destructive"
+                      : "secondary"
                   }
                 >
                   {video.status}
