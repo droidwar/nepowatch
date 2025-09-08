@@ -167,7 +167,7 @@ export default function NepoKidsPage() {
             </p>
             <div className="flex gap-2 justify-center">
               <Button variant="outline" asChild>
-                <a href="mailto:submit@nepowatch.org">Submit Evidence</a>
+                <a href="mailto:nepowatch@proton.me">Submit Evidence</a>
               </Button>
               <Button asChild>
                 <a href="/videos">View Related Videos</a>

@@ -15,14 +15,32 @@ export default function SubmitPage() {
     description: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.tiktokUrl || !formData.title) return;
 
-    // Simulate submission for now
-    setTimeout(() => {
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit video');
+      }
+
       setSubmitted(true);
       setFormData({
         submitterName: "",
@@ -30,7 +48,11 @@ export default function SubmitPage() {
         title: "",
         description: "",
       });
-    }, 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit video');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -47,7 +69,10 @@ export default function SubmitPage() {
                 Your TikTok video has been submitted for review. It will appear in the feed once approved by moderators.
               </p>
               <Button 
-                onClick={() => setSubmitted(false)}
+                onClick={() => {
+                  setSubmitted(false);
+                  setError("");
+                }}
                 className="mr-2"
               >
                 Submit Another
@@ -75,6 +100,11 @@ export default function SubmitPage() {
           </p>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-red-800 text-sm">{error}</p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -135,10 +165,10 @@ export default function SubmitPage() {
 
             <Button 
               type="submit" 
-              disabled={!formData.tiktokUrl || !formData.title}
+              disabled={!formData.tiktokUrl || !formData.title || isSubmitting}
               className="w-full"
             >
-              Submit Video
+              {isSubmitting ? "Submitting..." : "Submit Video"}
             </Button>
           </form>
         </CardContent>
