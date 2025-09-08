@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import TikTokVideo from "@/components/TikTokVideo";
 import { db } from "@/lib/firebase";
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { VideoSubmission } from "@/types";
@@ -22,11 +23,6 @@ async function getApprovedVideos(): Promise<VideoSubmission[]> {
   return videos;
 }
 
-function extractTikTokId(url: string): string {
-  // Example: https://www.tiktok.com/@user/video/1234567890123456789
-  const match = url.match(/\/video\/(\d+)/);
-  return match ? match[1] : "";
-}
 
 export default async function VideosPage() {
   const videos = await getApprovedVideos();
@@ -59,26 +55,20 @@ export default async function VideosPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {videos.map((video) => (
-                <Card key={video.id} className="border-green-200 h-full flex flex-col">
-                  <CardContent className="pt-4 flex-1 flex flex-col">
-                    <h4 className="font-semibold">{video.title}</h4>
-                    <p className="text-sm text-muted-foreground">
-                      By {video.submitterName} • {video.createdAt.toLocaleDateString()}
-                    </p>
-                    <p className="text-sm mt-2">{video.description}</p>
-                    <div className="my-4 flex-1 flex items-center justify-center">
-                      <iframe
-                        src={`https://www.tiktok.com/embed/${extractTikTokId(video.tiktokUrl)}`}
-                        width="100%"
-                        height="600"
-                        allow="encrypted-media"
-                        allowFullScreen
-                        frameBorder="0"
-                        className="rounded-lg"
-                      />
+                <Card key={video.id} className="border-green-200 overflow-hidden">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="mb-3">
+                      <h4 className="font-semibold text-sm sm:text-base line-clamp-2">{video.title}</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+                        By {video.submitterName} • {video.createdAt.toLocaleDateString()}
+                      </p>
+                      {video.description && (
+                        <p className="text-xs sm:text-sm mt-2 line-clamp-2 text-muted-foreground">{video.description}</p>
+                      )}
                     </div>
+                    <TikTokVideo url={video.tiktokUrl} size="large" />
                   </CardContent>
                 </Card>
               ))}

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { event } from "@/lib/gtag";
+import TikTokVideo from "@/components/TikTokVideo";
 import {
   collection,
   query,
@@ -15,7 +17,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { VideoSubmission } from "@/types";
+import { VideoSubmission, NepoEntry } from "@/types";
 
 interface AdminDashboardProps {
   adminEmail: string;
@@ -24,6 +26,8 @@ interface AdminDashboardProps {
 export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
   const [pendingVideos, setPendingVideos] = useState<VideoSubmission[]>([]);
   const [allVideos, setAllVideos] = useState<VideoSubmission[]>([]);
+  const [pendingNepoEntries, setPendingNepoEntries] = useState<NepoEntry[]>([]);
+  const [allNepoEntries, setAllNepoEntries] = useState<NepoEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -67,9 +71,49 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
       setAllVideos(videosData);
     });
 
+    // Get pending nepo entries
+    const pendingNepoQuery = query(
+      collection(db, "nepoEntries"),
+      where("status", "==", "pending"),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribePendingNepo = onSnapshot(pendingNepoQuery, (querySnapshot) => {
+      const nepoData: NepoEntry[] = [];
+      querySnapshot.forEach((doc) => {
+        nepoData.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+        } as NepoEntry);
+      });
+      setPendingNepoEntries(nepoData);
+    });
+
+    // Get all nepo entries for overview
+    const allNepoQuery = query(
+      collection(db, "nepoEntries"),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribeAllNepo = onSnapshot(allNepoQuery, (querySnapshot) => {
+      const nepoData: NepoEntry[] = [];
+      querySnapshot.forEach((doc) => {
+        nepoData.push({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(),
+        } as NepoEntry);
+      });
+      setAllNepoEntries(nepoData);
+      setLoading(false);
+    });
+
     return () => {
       unsubscribePending();
       unsubscribeAll();
+      unsubscribePendingNepo();
+      unsubscribeAllNepo();
     };
   }, []);
 
@@ -92,6 +136,13 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
       await updateDoc(doc(db, "videoSubmissions", videoId), {
         status: "approved",
       });
+      
+      // Track video approval
+      event({
+        action: 'video_approve',
+        category: 'admin',
+        label: 'content_moderation'
+      });
     } catch (error) {
       console.error("Error approving video:", error);
       alert("Error approving video");
@@ -109,11 +160,34 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
     }
   };
 
-  function extractTikTokId(url: string): string {
-    // Example: https://www.tiktok.com/@user/video/1234567890123456789
-    const match = url.match(/\/video\/(\d+)/);
-    return match ? match[1] : "";
-  }
+  const handleApproveNepo = async (entryId: string) => {
+    try {
+      await updateDoc(doc(db, "nepoEntries", entryId), {
+        status: "approved"
+      });
+      
+      // Track nepo entry approval
+      event({
+        action: 'nepo_approve',
+        category: 'admin',
+        label: 'content_moderation'
+      });
+    } catch (error) {
+      console.error("Error approving nepo entry:", error);
+      alert("Error approving nepo entry");
+    }
+  };
+
+  const handleRejectNepo = async (entryId: string) => {
+    try {
+      await updateDoc(doc(db, "nepoEntries", entryId), {
+        status: "rejected"
+      });
+    } catch (error) {
+      console.error("Error rejecting nepo entry:", error);
+      alert("Error rejecting nepo entry");
+    }
+  };
 
   if (loading) {
     return (
@@ -124,7 +198,7 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
   }
 
   const approvedCount = allVideos.filter((v) => v.status === "approved").length;
-  const rejectedCount = allVideos.filter((v) => v.status === "rejected").length;
+  const approvedNepoCount = allNepoEntries.filter((e) => e.status === "approved").length;
 
   return (
     <div className="space-y-6">
@@ -145,7 +219,7 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-orange-600">
-              {pendingVideos.length}
+              {pendingVideos.length + pendingNepoEntries.length}
             </div>
             <p className="text-sm text-muted-foreground">Pending Review</p>
           </CardContent>
@@ -153,17 +227,9 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold text-green-600">
-              {approvedCount}
+              {approvedCount + approvedNepoCount}
             </div>
-            <p className="text-sm text-muted-foreground">Approved</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">
-              {rejectedCount}
-            </div>
-            <p className="text-sm text-muted-foreground">Rejected</p>
+            <p className="text-sm text-muted-foreground">Approved Total</p>
           </CardContent>
         </Card>
         <Card>
@@ -171,7 +237,15 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
             <div className="text-2xl font-bold text-blue-600">
               {allVideos.length}
             </div>
-            <p className="text-sm text-muted-foreground">Total Submissions</p>
+            <p className="text-sm text-muted-foreground">Video Submissions</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold text-purple-600">
+              {allNepoEntries.length}
+            </div>
+            <p className="text-sm text-muted-foreground">Nepo Database Entries</p>
           </CardContent>
         </Card>
       </div>
@@ -213,20 +287,7 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
                           {video.createdAt.toLocaleDateString()}
                         </p>
                         <p className="text-sm mt-2">{video.description}</p>
-                        {/* TikTok embed */}
-                        <div className="my-4">
-                          <iframe
-                            src={`https://www.tiktok.com/embed/${extractTikTokId(
-                              video.tiktokUrl
-                            )}`}
-                            width="325"
-                            height="575"
-                            allow="encrypted-media"
-                            allowFullScreen
-                            frameBorder="0"
-                            className="rounded-lg mx-auto"
-                          />
-                        </div>
+                        <TikTokVideo url={video.tiktokUrl} size="medium" />
                       </div>
                       <div className="flex gap-2 ml-4">
                         <Button
@@ -252,6 +313,93 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
         </CardContent>
       </Card>
 
+      {/* Pending Nepo Entries */}
+      <Card>
+        <CardHeader>
+          <CardTitle>🏛️ Pending Nepo Database Entries ({pendingNepoEntries.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {pendingNepoEntries.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              No pending nepo entries to review
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {pendingNepoEntries.map((entry) => (
+                <Card key={entry.id} className="border-purple-200">
+                  <CardContent className="pt-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-lg font-semibold text-purple-800">{entry.childName}</h3>
+                          <Badge variant="secondary">
+                            {entry.evidenceType.replace('-', ' ')}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Child of {entry.parentName}
+                          {entry.parentPosition && ` (${entry.parentPosition})`}
+                        </p>
+                        <h4 className="font-medium mb-2">{entry.title}</h4>
+                        <p className="text-sm mb-2">{entry.description}</p>
+                        
+                        {entry.amount && (
+                          <p className="text-sm mb-2">
+                            <strong>Amount:</strong> {entry.amount}
+                          </p>
+                        )}
+                        
+                        {entry.dateOccurred && (
+                          <p className="text-sm mb-2">
+                            <strong>Date:</strong> {entry.dateOccurred}
+                          </p>
+                        )}
+
+                        <div className="mb-2">
+                          <p className="text-sm font-medium mb-1">Sources:</p>
+                          <div className="space-y-1">
+                            {entry.sources.map((source, index) => (
+                              <a
+                                key={index}
+                                href={source}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block text-xs text-blue-600 hover:underline break-all"
+                              >
+                                {source}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground">
+                          By {entry.submitterName} • {entry.createdAt.toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRejectNepo(entry.id)}
+                        >
+                          Reject
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => handleApproveNepo(entry.id)}
+                        >
+                          Approve
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Recent Submissions */}
       <Card>
         <CardHeader>
@@ -259,14 +407,18 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            {allVideos.slice(0, 10).map((video) => (
+            {/* Video submissions */}
+            {allVideos.slice(0, 5).map((video) => (
               <div
-                key={video.id}
+                key={`video-${video.id}`}
                 className="flex items-center justify-between py-2 border-b"
               >
                 <div>
-                  <span className="font-medium text-sm">{video.title}</span>
-                  <span className="text-muted-foreground text-sm ml-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-blue-600">📱 VIDEO</span>
+                    <span className="font-medium text-sm">{video.title}</span>
+                  </div>
+                  <span className="text-muted-foreground text-xs">
                     by {video.submitterName}
                   </span>
                 </div>
@@ -280,6 +432,35 @@ export function AdminDashboard({ adminEmail }: AdminDashboardProps) {
                   }
                 >
                   {video.status}
+                </Badge>
+              </div>
+            ))}
+            
+            {/* Nepo entries */}
+            {allNepoEntries.slice(0, 5).map((entry) => (
+              <div
+                key={`nepo-${entry.id}`}
+                className="flex items-center justify-between py-2 border-b"
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-purple-600">🏛️ NEPO</span>
+                    <span className="font-medium text-sm">{entry.childName}: {entry.title}</span>
+                  </div>
+                  <span className="text-muted-foreground text-xs">
+                    by {entry.submitterName}
+                  </span>
+                </div>
+                <Badge
+                  variant={
+                    entry.status === "approved"
+                      ? "default"
+                      : entry.status === "rejected"
+                      ? "destructive"
+                      : "secondary"
+                  }
+                >
+                  {entry.status}
                 </Badge>
               </div>
             ))}

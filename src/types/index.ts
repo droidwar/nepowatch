@@ -32,12 +32,18 @@ export interface Comment {
 
 export interface NepoEntry {
   id: string;
-  name: string;
-  politicianParent: string;
+  childName: string;
+  parentName: string;
+  parentPosition: string;
+  evidenceType: 'luxury-spending' | 'property' | 'education' | 'travel' | 'other';
+  title: string;
   description: string;
-  evidenceUrls: string[];
+  amount?: string;
+  dateOccurred?: string;
+  sources: string[];
+  submitterName?: string;
   createdAt: Date;
-  verified: boolean;
+  status: 'pending' | 'approved' | 'rejected';
 }
 
 export interface Vote {

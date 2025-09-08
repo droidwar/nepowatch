@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { event } from "@/lib/gtag";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -50,6 +51,13 @@ export default function SubmitPage() {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to submit video');
       }
+
+      // Track successful video submission
+      event({
+        action: 'video_submit',
+        category: 'engagement',
+        label: 'video_submission_success'
+      });
 
       setSubmitted(true);
       setFormData({
