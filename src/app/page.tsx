@@ -31,17 +31,14 @@ export default function Home() {
             <CardTitle className="text-lg">📢 Latest Updates</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="border-l-4 border-blue-500 pl-4 py-2">
-              <p className="font-semibold">September 8 Protests Ongoing</p>
-              <p className="text-sm text-muted-foreground">Gen Z protesters gather with One Piece flags across Nepal</p>
-            </div>
             <div className="border-l-4 border-orange-500 pl-4 py-2">
-              <p className="font-semibold">VPN Usage Up 400%</p>
-              <p className="text-sm text-muted-foreground">Youth circumventing social media restrictions</p>
+              <p className="font-semibold">At least 19 killed </p>
+              <p className="text-sm text-muted-foreground">Police fire on protesters in Kathmandu and Itahari. Parliament stormed, ambulance set ablaze. 
+                Home Minister Ramesh Lekhak resigns amid outrage.</p>
             </div>
             <div className="border-l-4 border-red-500 pl-4 py-2">
-              <p className="font-semibold">$37M Economic Impact</p>
-              <p className="text-sm text-muted-foreground">Immediate losses to telecom sector</p>
+              <p className="font-semibold">Cabinet Meeting</p>
+              <p className="text-sm text-muted-foreground">Prime Minister K.P. Sharma Oli convened a Cabinet meeting. During the session, Home Minister Ramesh Lekhak resigned on moral grounds, taking responsibility for the violent crackdown on the protests</p>
             </div>
           </CardContent>
         </Card>
@@ -77,29 +74,23 @@ export default function Home() {
       </div>
 
       {/* Key Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Card className="text-center">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-blue-600">13.5M</div>
-            <p className="text-sm text-muted-foreground">Users Affected</p>
+            <div className="text-2xl font-bold text-blue-600">19 </div>
+            <p className="text-sm text-muted-foreground">Deaths</p>
           </CardContent>
         </Card>
         <Card className="text-center">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">26</div>
-            <p className="text-sm text-muted-foreground">Platforms Banned</p>
+            <div className="text-2xl font-bold text-red-600">400+</div>
+            <p className="text-sm text-muted-foreground">Injured</p>
           </CardContent>
         </Card>
         <Card className="text-center">
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-orange-600">80%</div>
-            <p className="text-sm text-muted-foreground">Traffic Blocked</p>
-          </CardContent>
-        </Card>
-        <Card className="text-center">
-          <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-purple-600">19%</div>
-            <p className="text-sm text-muted-foreground">Youth Unemployment</p>
+            <div className="text-2xl font-bold text-orange-600">Home Minister Ramesh Lekhak</div>
+            <p className="text-sm text-muted-foreground">Resigned</p>
           </CardContent>
         </Card>
       </div>
