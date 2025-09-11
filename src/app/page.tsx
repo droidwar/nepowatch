@@ -56,7 +56,7 @@ export default function Home() {
               <h4 className="font-semibold mb-2 text-orange-600">Movement Status:</h4>
               <div className="bg-orange-50 p-3 rounded-lg">
                 <p className="text-sm text-orange-700">
-                  <strong>"Indefinite continuation until demands are met"</strong> - Protest leaders
+                  <strong>&ldquo;Indefinite continuation until demands are met&rdquo;</strong> - Protest leaders
                 </p>
                 <p className="text-xs text-orange-600 mt-2">
                   Despite social media restoration and PM resignation, systemic change demands remain unmet.
@@ -156,8 +156,8 @@ export default function Home() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="bg-purple-50 p-3 rounded-lg">
-              <p className="font-semibold text-purple-800">Straw Hat Pirates' Symbol</p>
-              <p className="text-sm text-purple-600">Protesters carry Luffy's Jolly Roger (skull with straw hat) as declaration of living freely and pursuing dreams regardless of government rules.</p>
+              <p className="font-semibold text-purple-800">Straw Hat Pirates&rsquo; Symbol</p>
+              <p className="text-sm text-purple-600">Protesters carry Luffy&rsquo;s Jolly Roger (skull with straw hat) as declaration of living freely and pursuing dreams regardless of government rules.</p>
             </div>
             <div className="bg-blue-50 p-3 rounded-lg">
               <p className="font-semibold text-blue-800">International Movement</p>
@@ -173,7 +173,7 @@ export default function Home() {
           <CardContent className="space-y-3">
             <div className="bg-red-50 p-3 rounded-lg">
               <p className="font-semibold text-red-800">#NepoBaby Trending</p>
-              <p className="text-sm text-red-600">TikTok videos exposed extravagant lifestyles of politicians' children in country with $1,300 per capita income.</p>
+              <p className="text-sm text-red-600">TikTok videos exposed extravagant lifestyles of politicians&rsquo; children in country with $1,300 per capita income.</p>
             </div>
             <div className="bg-orange-50 p-3 rounded-lg">
               <p className="font-semibold text-orange-800">Corruption Catalyst</p>
